@@ -1,2 +1,2 @@
 sample, fastq_1, fastq_2
-SAMPLE1_PE, test_data/toy_read_fastq/selected_R1_reads.fastq, test_data/toy_read_fastq/selected_R2_reads.fastq
+SAMPLE1_PE, test_data/toy_read_fastq/selected_R1_reads.fastq.gz, test_data/toy_read_fastq/selected_R2_reads.fastq.gz
