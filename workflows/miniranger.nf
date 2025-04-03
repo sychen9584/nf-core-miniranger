@@ -5,6 +5,8 @@
 */
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { SIMPLEAF_INDEX         } from '../modules/nf-core/simpleaf/index/main'
+include { SIMPLEAF_QUANT         } from '../modules/nf-core/simpleaf/quant/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -24,6 +26,8 @@ workflow MINIRANGER {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+
+    ch_samplesheet.view()
     //
     // MODULE: Run FastQC
     //
