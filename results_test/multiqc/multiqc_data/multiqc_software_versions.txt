@@ -1,3 +1,0 @@
-Sample	fastqc	nf-core/miniranger	Nextflow
-FastQC	0.12.1		
-Workflow		v1.0.0dev	24.10.5

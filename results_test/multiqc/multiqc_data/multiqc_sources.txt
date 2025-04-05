@@ -1,3 +1,0 @@
-Module	Section	Sample Name	Source
-FastQC	all_sections	SAMPLE1_PE_2	/home/sychen9584/projects/nf-core-miniranger/work/26/77cc42204b62097ec54c8da4fdb510/4/SAMPLE1_PE_2_fastqc.zip
-FastQC	all_sections	SAMPLE1_PE_1	/home/sychen9584/projects/nf-core-miniranger/work/26/77cc42204b62097ec54c8da4fdb510/3/SAMPLE1_PE_1_fastqc.zip

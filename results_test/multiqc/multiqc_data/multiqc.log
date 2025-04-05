@@ -1,7 +1,0 @@
-[2025-04-03 15:42:07,512] multiqc.config                                     [INFO   ]  Loading config settings from: multiqc_config.yml
-[2025-04-03 15:42:08,648] multiqc.core.version_check                         [WARNING]  MultiQC Version v1.28 now available!
-[2025-04-03 15:42:08,648] multiqc.core.file_search                           [INFO   ]  Search path: /home/sychen9584/projects/nf-core-miniranger/work/26/77cc42204b62097ec54c8da4fdb510
-[2025-04-03 15:42:08,709] multiqc.modules.custom_content.custom_content      [INFO   ]  nf-core-miniranger-summary: Found 1 sample (html)
-[2025-04-03 15:42:08,709] multiqc.modules.custom_content.custom_content      [INFO   ]  nf-core-miniranger-methods-description: Found 1 sample (html)
-[2025-04-03 15:42:08,737] multiqc.modules.fastqc.fastqc                      [INFO   ]  Found 2 reports
-[2025-04-03 15:42:08,905] multiqc.core.write_results                         [INFO   ]  Rendering plots. Export plots to formats png, svg, pdf is requested, so it might take a while. To disable plot export, set `export_plots: false` in config, or remove the `--export-plots` command line flag

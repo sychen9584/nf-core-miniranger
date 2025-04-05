@@ -43,6 +43,8 @@ workflow NFCORE_MINIRANGER {
 
     take:
     samplesheet // channel: samplesheet read in from --input
+    genome_fasta // channel: genome fasta read in from --fasta
+    genome_gtf   // channel: genome gtf read in from --gtf
 
     main:
 
@@ -50,7 +52,7 @@ workflow NFCORE_MINIRANGER {
     // WORKFLOW: Run pipeline
     //
     MINIRANGER (
-        samplesheet
+        samplesheet, genome_fasta, genome_gtf
     )
     emit:
     multiqc_report = MINIRANGER.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -79,8 +81,14 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
+    
+    def fasta_ch = Channel.fromPath(params.fasta, checkIfExists: true)
+    def gtf_ch   = Channel.fromPath(params.gtf, checkIfExists: true)
+
     NFCORE_MINIRANGER (
-        PIPELINE_INITIALISATION.out.samplesheet
+        PIPELINE_INITIALISATION.out.samplesheet,
+        fasta_ch,
+        gtf_ch,
     )
     //
     // SUBWORKFLOW: Run completion tasks

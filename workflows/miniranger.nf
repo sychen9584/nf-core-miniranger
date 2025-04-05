@@ -22,12 +22,14 @@ workflow MINIRANGER {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+    ch_genome_fasta
+    ch_genome_gtf
+
     main:
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    ch_samplesheet.view()
     //
     // MODULE: Run FastQC
     //
@@ -37,6 +39,45 @@ workflow MINIRANGER {
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
+    //
+    // MODULE: SimpleAF Index
+    //
+    ch_genome_fasta_gtf = ch_genome_fasta.combine( ch_genome_gtf ).map{ fasta, gtf -> [[id: "ref"], fasta, gtf] }
+    //ch_genome_fasta_gtf.view()
+
+    SIMPLEAF_INDEX (
+        ch_genome_fasta_gtf,
+        [[:], []], // meta, transcript FASTA
+        [[:], []], // meta, probe CSV
+        [[:], []] // meta, feature CSV
+    )
+    // Channel of tuple(meta, index dir)
+    simpleaf_ref    = SIMPLEAF_INDEX.out.ref
+
+    // Channel of version
+    ch_versions = ch_versions.mix( SIMPLEAF_INDEX.out.versions )
+
+    //
+    // MODULE: SimpleAF Quant
+    //
+
+    // meta, chemistry, reads
+    ch_quant_reads = ch_samplesheet.map{ meta, reads -> 
+        [meta + ["chemistry": params.chemistry], params.chemistry, reads] 
+    }
+    // meta, index, t2g mapping
+    txp2gene = SIMPLEAF_INDEX.out.t2g.map{ meta, t2g_file -> t2g_file }
+    ch_quant_index = SIMPLEAF_INDEX.out.index.combine(txp2gene).collect()
+   
+    SIMPLEAF_QUANT (
+        ch_quant_reads,
+        ch_quant_index,
+        [[:], "unfiltered-pl", [], [] ], // meta, cell filtering strategy
+        params.umi_resolution, 
+        [[:], []] // meta, mapping results
+    )
+
+    
     //
     // Collate and save software versions
     //

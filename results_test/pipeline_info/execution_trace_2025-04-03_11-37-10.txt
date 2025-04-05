@@ -1,2 +1,0 @@
-task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
-1	85/3d2eae	38385	NFCORE_MINIRANGER:MINIRANGER:FASTQC (SAMPLE1_PE)	FAILED	1	2025-04-03 11:37:16.198	4.8s	4.7s	-	-	-	-	-
