@@ -1,0 +1,19 @@
+{
+    "10xv1": {
+            "chemistry": "10xv1",
+            "whitelist": "assets/whitelist/10x_V1_barcode_whitelist.txt.gz"
+        },
+
+    "10xv2": {
+            "chemistry": "10xv2",
+            "whitelist": "assets/whitelist/10x_V2_barcode_whitelist.txt.gz"
+        },
+    "10xv3": {
+            "chemistry": "10xv3",
+            "whitelist": "assets/whitelist/10x_V3_barcode_whitelist.txt.gz"
+        },
+    "10xv4": {
+            "chemistry": "10xv4",
+            "whitelist": "assets/whitelist/10x_V4_barcode_whitelist.txt.gz"
+        }
+}

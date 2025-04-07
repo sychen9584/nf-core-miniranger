@@ -30,6 +30,10 @@ workflow MINIRANGER {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
+    chemistry_config = Utils.getChemistry(workflow, log, params.chemistry)
+    bc_whitelist = file("$projectDir/${chemistry_config['whitelist']}", checkIfExists: true)
+
+
     //
     // MODULE: Run FastQC
     //
@@ -72,7 +76,7 @@ workflow MINIRANGER {
     SIMPLEAF_QUANT (
         ch_quant_reads,
         ch_quant_index,
-        [[:], "unfiltered-pl", [], [] ], // meta, cell filtering strategy
+        [[:], "unfiltered-pl", [], bc_whitelist ], // meta, cell filtering strategy
         params.umi_resolution, 
         [[:], []] // meta, mapping results
     )
