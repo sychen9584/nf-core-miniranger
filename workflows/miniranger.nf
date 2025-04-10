@@ -7,6 +7,7 @@ include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { SIMPLEAF_INDEX         } from '../modules/nf-core/simpleaf/index/main'
 include { SIMPLEAF_QUANT         } from '../modules/nf-core/simpleaf/quant/main'
+include { ALEVINQC               } from '../modules/local/alevinqc'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -80,6 +81,19 @@ workflow MINIRANGER {
         params.umi_resolution, 
         [[:], []] // meta, mapping results
     )
+    ch_versions = ch_versions.mix(SIMPLEAF_QUANT.out.versions)
+    ch_af_map = SIMPLEAF_QUANT.out.map
+    ch_af_quant = SIMPLEAF_QUANT.out.quant
+
+    //
+    // MODULE: AlevinQC
+    //
+    ALEVINQC (
+        ch_af_quant,
+        ch_af_quant,
+        ch_af_map,
+    )
+    ch_versions = ch_versions.mix(ALEVINQC.out.versions)
 
     
     //
