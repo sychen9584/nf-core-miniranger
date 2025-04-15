@@ -1,31 +1,3 @@
-Run Name: $runName
-
-<% if (success){
-    out << "## nf-core/miniranger execution completed successfully! ##"
-} else {
-    out << """####################################################
-## nf-core/miniranger execution completed unsuccessfully! ##
-####################################################
-The exit status of the task that caused the workflow execution to fail was: $exitStatus.
-The full error message was:
-
-${errorReport}
-"""
-} %>
-
-
-The workflow was completed at $dateComplete (duration: $duration)
-
-The command used to launch the workflow was as follows:
-
-  $commandLine
-
-
-
-Pipeline Configuration:
------------------------
-<% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
-
---
-nf-core/miniranger
-https://github.com/nf-core/miniranger
+version https://git-lfs.github.com/spec/v1
+oid sha256:00f5308bca9bb10a4e93b2bdd446ac0c4fd5b86a72d25630de2341ed6fceb538
+size 756
