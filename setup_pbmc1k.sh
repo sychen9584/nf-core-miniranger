@@ -17,6 +17,10 @@ sudo apt-get update
 # Install Docker Engine, CLI, and Containerd
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+sudo usermod -aG docker $USER
+newgrp docker
+
+
 # === Install Nextflow ===
 # Install Java
 sudo apt install -y openjdk-17-jre-headless
@@ -36,10 +40,15 @@ cd nf-core-miniranger
 # === Download PBMC3k FASTQs ===
 mkdir -p data && cd data
 curl -O https://cf.10xgenomics.com/samples/cell-exp/3.0.0/pbmc_1k_v3/pbmc_1k_v3_fastqs.tar
-tar -xzf pbmc_1k_v3_fastqs.tar
+tar -xvf pbmc_1k_v3_fastqs.tar
 cd ../
 
 # === Download Reference ===
 mkdir -p refs && cd refs
 curl -O "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2024-A.tar.gz"
 tar -xzvf refdata-gex-GRCh38-2024-A.tar.gz
+gunzip refdata-gex-GRCh38-2024-A/genes/genes.gtf.gz
+cd ../
+
+# move samplesheet to data directory
+mv pbmc_1k_v3_samplesheet.csv data/pbmc_1k_v3_fastqs

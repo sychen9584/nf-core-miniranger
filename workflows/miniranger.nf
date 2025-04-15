@@ -74,7 +74,6 @@ workflow MINIRANGER {
     txp2gene = SIMPLEAF_INDEX.out.t2g.map{ meta, t2g_file -> t2g_file }
     ch_quant_index = SIMPLEAF_INDEX.out.index.combine(txp2gene).collect()
 
-    ch_quant_reads.view()
    
     SIMPLEAF_QUANT (
         ch_quant_reads,
