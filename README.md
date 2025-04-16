@@ -69,7 +69,7 @@ nextflow run nf-core/miniranger \
 
 ## Citations
 
-nf-core/miniranger was originally written by Sam Chen
+nf-core-miniranger was originally developed by Sam Chen
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
 
