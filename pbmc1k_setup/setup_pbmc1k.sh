@@ -17,10 +17,6 @@ sudo apt-get update
 # Install Docker Engine, CLI, and Containerd
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-sudo usermod -aG docker $USER
-newgrp docker
-
-
 # === Install Nextflow ===
 # Install Java
 sudo apt install -y openjdk-17-jre-headless
@@ -52,3 +48,6 @@ cd ../
 
 # move samplesheet to data directory
 mv pbmc_1k_v3_samplesheet.csv data/pbmc_1k_v3_fastqs
+
+sudo usermod -aG docker $USER
+newgrp docker

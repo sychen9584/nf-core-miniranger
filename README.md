@@ -1,36 +1,44 @@
 # nf-core/miniranger
 
-[![GitHub Actions CI Status](https://github.com/nf-core/miniranger/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/miniranger/actions/workflows/ci.yml)
-[![GitHub Actions Linting Status](https://github.com/nf-core/miniranger/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/miniranger/actions/workflows/linting.yml)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
-[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
-
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A524.04.2-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
-[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/nf-core/miniranger)
+[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 ## Introduction
 
-**nf-core/miniranger** is a bioinformatics pipeline that ...
+**nf-core/miniranger** is a lightweight bioinformatics pipeline that can be used to analyse single cell RNA sequencing (scRNA-seq) utilizing mainly [simpleaf(https://simpleaf.readthedocs.io/en/latest/index.html)]. simpleaf is a rust framework that simplifies the processing of single cell data using tools from the [alevin-fry(https://alevin-fry.readthedocs.io/en/latest/)] ecosystem. The pipeline takes a samplesheet, FASTQ files, and reference genome FASTA and annotation (gtf) files as input. It performs quality control (QC) and pseudoalignment, and produces a cell x gene expression matrix and QC report as output.
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
+```mermaid
 
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+%% https://xkcd.com/1195/
+
+graph LR
+
+A[[FASTQ files]] --> B1(FastQC)
+B1 --> C1(simpleaf quant)
+B2[[Reference genome <br> FASTA + GTF files]] --> C2(simpleaf index)
+C2 --> C1
+C1 --> D1(AlevinQC)
+C1 --> D2(MultiQC)
+C1 --> D3[[Cell X Gene matrix]]
+D1 --> E[[QC reports]]
+D2 --> E
+
+```
+
+1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+2. Index reference genome ([`simpleaf index`](https://simpleaf.readthedocs.io/en/latest/index-command.html))
+3. Pseudo-alignment ([`simpleaf quant`](https://simpleaf.readthedocs.io/en/latest/quant-command.html))
+4. QC report for raw reads ([`MultiQC`](http://multiqc.info/))
+5. QC report for simpleaf ([`alevinQC`](https://csoneson.github.io/alevinQC/articles/alevinqc.html))
+
 
 ## Usage
 
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
-
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -38,47 +46,30 @@ First, prepare a samplesheet with your input data that looks as follows:
 
 ```csv
 sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+PBMC_1k,PBMC_1k_S1_L001_R1_001.fastq.gz,PBMC_1k_S1_S1_L002_R2_001.fastq.gz
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
+Each row represents a fastq file (single-end) or a pair of fastq files (paired end). Rows with the same sample identifier are considered technical replicates and merged automatically.
 
 Now, you can run the pipeline using:
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
-
 ```bash
 nextflow run nf-core/miniranger \
-   -profile <docker/singularity/.../institute> \
+   -profile <docker/singularity/conda/test> \
    --input samplesheet.csv \
-   --outdir <OUTDIR>
+   --outdir <OUTDIR> \
+   --fasta genome.fa \
+   --gtf genes.gtf
+   --chemistry 10xv3
 ```
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
 
-## Credits
-
-nf-core/miniranger was originally written by Sam Chen.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use nf-core/miniranger for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
-
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
+nf-core/miniranger was originally written by Sam Chen
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
 
